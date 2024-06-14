@@ -78,7 +78,7 @@ for i in range(len(fish_directions)):
 # Pokedex variables
 show_pokedex = False
 pokedex_scroll_y = 0
-pokedex_scroll_speed = 5
+pokedex_scroll_speed = 20
 pokedex_items = [
     {"name": "Fish 1", "image": fish_image},
     {"name": "Fish 2", "image": fish_image},
@@ -142,8 +142,10 @@ def draw_pokedex():
     
     for i, item in enumerate(pokedex_items):
         item_text = text_font.render(item["name"], True, (0, 0, 0))
-        pokedex_surface.blit(item["image"], (20, 20 + i * 60 - pokedex_scroll_y))
-        pokedex_surface.blit(item_text, (80, 30 + i * 60 - pokedex_scroll_y))
+        item_y_position = 20 + i * 60 - pokedex_scroll_y
+        if 0 <= item_y_position <= 600:  # Only draw items that are within the visible range
+            pokedex_surface.blit(item["image"], (20, item_y_position))
+            pokedex_surface.blit(item_text, (80, 30 + i * 60 - pokedex_scroll_y))
     
     screen.blit(pokedex_surface, (0, 180))  # Adjusted position to below buttons
 
@@ -182,7 +184,12 @@ while running:
             if event.key == pygame.K_UP:
                 pokedex_scroll_y = max(pokedex_scroll_y - pokedex_scroll_speed, 0)
             elif event.key == pygame.K_DOWN:
-                pokedex_scroll_y = min(pokedex_scroll_y + pokedex_scroll_speed, len(pokedex_items) * 60 - 640)  # Adjusted to new Pokedex height
+                pokedex_scroll_y = min(pokedex_scroll_y + pokedex_scroll_speed, max(len(pokedex_items) * 60 - 600, 0))  # Adjusted to new Pokedex height
+        elif event.type == pygame.MOUSEWHEEL:
+            if event.y > 0:  # Scroll up
+                pokedex_scroll_y = max(pokedex_scroll_y - pokedex_scroll_speed, 0)
+            else:  # Scroll down
+                pokedex_scroll_y = min(pokedex_scroll_y + pokedex_scroll_speed, max(len(pokedex_items) * 60 - 600, 0))  # Adjusted to new Pokedex height
 
     screen.fill(background_color)
     
@@ -191,11 +198,12 @@ while running:
     for i, rect in enumerate(nav_button_rects):
         draw_button(rect, nav_buttons[i])
     
+    for rect in feed_button_rects:
+        screen.blit(corn_image, rect.topleft)
+    
     if show_pokedex:
         draw_pokedex()
     else:
-        for rect in feed_button_rects:
-            screen.blit(corn_image, rect.topleft)
         draw_fish()
     
     pygame.display.flip()
