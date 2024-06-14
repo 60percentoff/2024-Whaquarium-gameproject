@@ -36,6 +36,10 @@ input_text_color = (0, 0, 0)
 corn_image = pygame.image.load('corn.png')
 corn_image = pygame.transform.scale(corn_image, (50, 50))
 
+# Load fish images for Pokedex
+fish_image = pygame.image.load('whale.png')
+fish_image = pygame.transform.scale(fish_image, (50, 50))
+
 # Font settings
 logo_font = pygame.font.Font(None, 74)
 button_font = pygame.font.Font(None, 36)
@@ -75,7 +79,18 @@ for i in range(len(fish_directions)):
 show_pokedex = False
 pokedex_scroll_y = 0
 pokedex_scroll_speed = 5
-pokedex_items = ["Fish 1", "Fish 2", "Fish 3", "Fish 4", "Fish 5", "Fish 6", "Fish 7", "Fish 8", "Fish 9", "Fish 10"]
+pokedex_items = [
+    {"name": "Fish 1", "image": fish_image},
+    {"name": "Fish 2", "image": fish_image},
+    {"name": "Fish 3", "image": fish_image},
+    {"name": "Fish 4", "image": fish_image},
+    {"name": "Fish 5", "image": fish_image},
+    {"name": "Fish 6", "image": fish_image},
+    {"name": "Fish 7", "image": fish_image},
+    {"name": "Fish 8", "image": fish_image},
+    {"name": "Fish 9", "image": fish_image},
+    {"name": "Fish 10", "image": fish_image}
+]
 
 # Function to draw buttons
 def draw_button(rect, text):
@@ -126,8 +141,9 @@ def draw_pokedex():
     pokedex_surface.fill((255, 255, 255))
     
     for i, item in enumerate(pokedex_items):
-        item_text = text_font.render(item, True, (0, 0, 0))
-        pokedex_surface.blit(item_text, (20, 20 + i * 40 - pokedex_scroll_y))
+        item_text = text_font.render(item["name"], True, (0, 0, 0))
+        pokedex_surface.blit(item["image"], (20, 20 + i * 60 - pokedex_scroll_y))
+        pokedex_surface.blit(item_text, (80, 30 + i * 60 - pokedex_scroll_y))
     
     screen.blit(pokedex_surface, (50, 150))
 
@@ -166,7 +182,7 @@ while running:
             if event.key == pygame.K_UP:
                 pokedex_scroll_y = max(pokedex_scroll_y - pokedex_scroll_speed, 0)
             elif event.key == pygame.K_DOWN:
-                pokedex_scroll_y = min(pokedex_scroll_y + pokedex_scroll_speed, len(pokedex_items) * 40 - 700)
+                pokedex_scroll_y = min(pokedex_scroll_y + pokedex_scroll_speed, len(pokedex_items) * 60 - 700)
 
     screen.fill(background_color)
     
