@@ -137,7 +137,7 @@ def draw_fish():
 # Function to draw Pokedex
 def draw_pokedex():
     global pokedex_scroll_y
-    pokedex_surface = pygame.Surface((700, 780))
+    pokedex_surface = pygame.Surface((700, 640))  # Adjusted height to not cover buttons
     pokedex_surface.fill((255, 255, 255))
     
     for i, item in enumerate(pokedex_items):
@@ -145,7 +145,7 @@ def draw_pokedex():
         pokedex_surface.blit(item["image"], (20, 20 + i * 60 - pokedex_scroll_y))
         pokedex_surface.blit(item_text, (80, 30 + i * 60 - pokedex_scroll_y))
     
-    screen.blit(pokedex_surface, (0, 120))
+    screen.blit(pokedex_surface, (0, 180))  # Adjusted position to below buttons
 
 # Main loop
 running = True
@@ -182,7 +182,7 @@ while running:
             if event.key == pygame.K_UP:
                 pokedex_scroll_y = max(pokedex_scroll_y - pokedex_scroll_speed, 0)
             elif event.key == pygame.K_DOWN:
-                pokedex_scroll_y = min(pokedex_scroll_y + pokedex_scroll_speed, len(pokedex_items) * 60 - 700)
+                pokedex_scroll_y = min(pokedex_scroll_y + pokedex_scroll_speed, len(pokedex_items) * 60 - 640)  # Adjusted to new Pokedex height
 
     screen.fill(background_color)
     
