@@ -73,6 +73,12 @@ for i in range(len(fish_directions)):
     if fish_directions[i] == 1:
         fish_images[i] = pygame.transform.flip(fish_images[i], True, False)
 
+# Pokedex variables
+show_pokedex = False
+pokedex_scroll_y = 0
+pokedex_scroll_speed = 5
+pokedex_items = ["Fish 1", "Fish 2", "Fish 3", "Fish 4", "Fish 5", "Fish 6", "Fish 7", "Fish 8", "Fish 9", "Fish 10"]
+
 # Function to draw buttons
 def draw_button(rect, text):
     pygame.draw.rect(screen, button_color, rect)
@@ -115,6 +121,18 @@ def draw_fish():
         fish_directions[i] = fish_direction
         screen.blit(fish_images[i], (fish_x, fish_y))
 
+# Function to draw Pokedex
+def draw_pokedex():
+    global pokedex_scroll_y
+    pokedex_surface = pygame.Surface((600, 700))
+    pokedex_surface.fill((255, 255, 255))
+    
+    for i, item in enumerate(pokedex_items):
+        item_text = text_font.render(item, True, (0, 0, 0))
+        pokedex_surface.blit(item_text, (20, 20 + i * 40 - pokedex_scroll_y))
+    
+    screen.blit(pokedex_surface, (50, 150))
+
 # Main loop
 running = True
 while running:
@@ -144,6 +162,11 @@ while running:
                 if dragging_fish[i]:
                     fish_positions[i][0] = mouse_pos[0] + drag_offset_x[i]
                     fish_positions[i][1] = mouse_pos[1] + drag_offset_y[i]
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                pokedex_scroll_y = max(pokedex_scroll_y - pokedex_scroll_speed, 0)
+            elif event.key == pygame.K_DOWN:
+                pokedex_scroll_y = min(pokedex_scroll_y + pokedex_scroll_speed, len(pokedex_items) * 40 - 700)
 
     screen.fill(background_color)
     
@@ -151,6 +174,9 @@ while running:
     
     for i, rect in enumerate(nav_button_rects):
         draw_button(rect, nav_buttons[i])
+
+    if show_pokedex:
+        draw_pokedex()
     
     for rect in feed_button_rects:
         screen.blit(corn_image, rect.topleft)
