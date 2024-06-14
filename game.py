@@ -137,7 +137,7 @@ def draw_fish():
 # Function to draw Pokedex
 def draw_pokedex():
     global pokedex_scroll_y
-    pokedex_surface = pygame.Surface((600, 700))
+    pokedex_surface = pygame.Surface((700, 780))
     pokedex_surface.fill((255, 255, 255))
     
     for i, item in enumerate(pokedex_items):
@@ -145,7 +145,7 @@ def draw_pokedex():
         pokedex_surface.blit(item["image"], (20, 20 + i * 60 - pokedex_scroll_y))
         pokedex_surface.blit(item_text, (80, 30 + i * 60 - pokedex_scroll_y))
     
-    screen.blit(pokedex_surface, (50, 150))
+    screen.blit(pokedex_surface, (0, 120))
 
 # Main loop
 running = True
