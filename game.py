@@ -1,21 +1,19 @@
 import pygame
 import sys
-import os
 import random
 import requests as req
 import json
 
-'''
-Example return data : {"userdata": [[1, "meow", "61be55a8e2f6b4e172338bddf184d6dbee29c98853e0a0485ecee7f27b9af0b4", "{}", "{}", 100, 0, "{}", "{}", "26a989a23abf5ee3ae4106883e9f534a8042846458e34df03ab5ee063692f007", 1]]}
-
-id, username, password, fishes data, foods data, money data, total play duration time, pre_fishes, acheivements, token, level
-'''
-
+# Fetch token and IP address from command-line arguments
 token = sys.argv[1]
 ip_text = sys.argv[2]
 
 # Fetch user data
-userdata = json.loads(req.get(f"{ip_text}/api/getUserdata/token/{token}").text)['userdata'][0]
+try:
+    userdata = json.loads(req.get(f"{ip_text}/api/getUserdata/token/{token}").text)['userdata'][0]
+except (req.RequestException, json.JSONDecodeError, KeyError):
+    print("Error fetching user data")
+    sys.exit()
 
 # Initialize Pygame
 pygame.init()
@@ -146,6 +144,8 @@ while running:
                     print(f"Feed button {i+1} pressed")
             for i, rect in enumerate(nav_button_rects):
                 if rect.collidepoint(mouse_pos):
+                    if nav_buttons[i] == "Pokedex":
+                        show_pokedex = not show_pokedex
                     print(f"{nav_buttons[i]} button pressed")
             for i in range(len(fish_positions)):
                 fish_rect = pygame.Rect(fish_positions[i][0], fish_positions[i][1], 70, 70)
@@ -174,14 +174,13 @@ while running:
     
     for i, rect in enumerate(nav_button_rects):
         draw_button(rect, nav_buttons[i])
-
+    
     if show_pokedex:
         draw_pokedex()
-    
-    for rect in feed_button_rects:
-        screen.blit(corn_image, rect.topleft)
-    
-    draw_fish()
+    else:
+        for rect in feed_button_rects:
+            screen.blit(corn_image, rect.topleft)
+        draw_fish()
     
     pygame.display.flip()
     pygame.time.Clock().tick(60)
